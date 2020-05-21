@@ -1,0 +1,51 @@
+﻿@model DotNetShop.Web.Models.Movie.MovieListingModel
+
+@section scripts{
+    <script>
+        function changeValue(target, output, total, num) {
+            debugger;
+            let val = parseInt(target.value);
+            if (num < 0 && val <= 1) {
+                return;
+            }
+            val += num;
+            target.value = val;
+
+            let totalInt = val * parseFloat(total.substring(1));
+            output.value = ('$' + totalInt).substring(0, 6);
+        }
+
+        function readUrl(input, id) {
+            if (input && input.value) {
+                $('#' + id).attr('src', input.value);
+            }
+        }
+
+       // changeValue( document.getElementById('amount-input-' + 40), document.getElementById('movieTotal-61398511'), $4.40, 1)
+    </script>
+}
+
+<div class="btn-addToCart">
+    <div class="categoryPrice"> <input readonly class="form-control" style="outline:none" id="movieTotal-@(Model.GetHashCode())" value="@Model.Total"></div>
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="categoryPrice">In Stock: @Model.InStock</div>
+    }
+    <form asp-controller="ShoppingCart" asp-action="Add" method="get" class="form-horizontal" role="form">
+        <a onclick="changeValue(document.getElementById('amount-input-'+@(Model.Id.ToString())), document.getElementById('movieTotal-' + @(Model.GetHashCode())),'@(Model.Total)', 1)"><i class="fas fa-plus"></i></a>
+        <input id="amount-input-@Model.Id" asp-for="Amount" style="width:20%" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+        <a onclick="changeValue(document.getElementById('amount-input-'+@(Model.Id.ToString())),document.getElementById('movieTotal-' + @(Model.GetHashCode())), '@(Model.Total)', -1)"><i class="fas fa-minus"></i></a>
+        <div class="btn-cart">
+            <input value="Add to cart" type="submit" class="btn btn-success" asp-controller="ShoppingCart" asp-action="Add" asp-route-id="@Model.Id" asp-route-amount="@Model.Amount" asp-route-returnUrl="@Context.Request.Path">
+        </div>
+    </form>
+</div>
+
+<div class="movieData">
+    <div class="movieName">
+        <div class="categoryLogo" style="background-image: url(@Model.ImageUrl);"></div>
+        <a class="btn btn-info" asp-controller="Movie" asp-action="Index" asp-route-id="@Model.Id">
+            @Model.Name
+        </a>
+    </div>
+</div>

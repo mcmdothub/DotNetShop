@@ -1,0 +1,38 @@
+﻿@model DotNetShop.Web.Models.Home.HomeIndexModel
+
+<div class="container body-content">
+    <div class="row frontPageSplash">
+        <div class="col-md-6 frontPageLearn">
+            <div class="frontPageHeading">What to watch</div>
+            <p class="frontPageSubHeading">Search for movie</p>
+            <div>
+                <form asp-controller="Home" asp-action="Search" method="post">
+                    <input asp-for="SearchQuery" type="text" class="homeSearch" placeholder="Search movie..." />
+                </form>
+            </div>
+        </div>
+        <div class="col-md-6"></div>
+    </div>
+    <div class="row frontPageContent">
+        <h3 id="latestMovies">Search result</h3>
+        @if (Model.MoviesList.Any())
+        {
+            <table class="table table-hover" id="latestMoviesTable">
+                <tbody>
+                    @foreach (var movie in Model.MoviesList)
+                    {
+                        <tr>
+                            <td>
+                                @Html.Partial("MovieSummary", movie)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <h4>It looks like there are no search results...</h4>
+        }
+    </div>
+</div>
